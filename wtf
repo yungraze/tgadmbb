@@ -85,13 +85,13 @@ def act_li(message):
 
     elif message.text == "✅ Завершить создание бота":
         bot.send_message(message.chat.id, text="Ваш бот создан")
-
     else:
         bot.send_message(message.chat.id,
                          text="На такую комманду я не запрограммирован..")
 
 
 def process_delete_user_step(message):
+    global kick_tf
     if (message.text == "Да"):
         kick_tf = True
         msg = bot.send_message(message.chat.id,
@@ -111,6 +111,7 @@ def save_delete_user_command(message):
 
 
 def process_mute_user_step(message):
+    global mute_tf
     if (message.text == "Да"):
         mute_tf = True
         msg = bot.send_message(message.chat.id,
@@ -138,6 +139,7 @@ def save_mute_user_command(message):
 
 
 def process_def_user_step(message):
+    global spam_tf
     if (message.text == "Да"):
         spam_tf = True
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True,
