@@ -14,9 +14,9 @@ def help(message):
 @bot.message_handler(commands=['kick'])
 def kick_user(message):
     if message.reply_to_message:
+        chat_id = message.chat.id
         user_id = message.reply_to_message.from_user.id
         user_status = bot.get_chat_member(chat_id, user_id).status
-        chat_id = message.chat.id
         if (user_status == 'administrator') or (user_status == 'creator'):
             bot.reply_to(message, "Невозможно кикнуть администратора.")
         else:
