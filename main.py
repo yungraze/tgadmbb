@@ -8,7 +8,7 @@ def start(message):
 
 @bot.message_handler(commands=['help'])
 def help(message):
-    bot.reply_to(message, "/kick - кикнуть пользователя\n/mute - замутить пользователя на определенное время\n/unmute - размутить пользователя\n/stats - показать статистику чата\n/selfstat - показать свою статистику")
+    bot.reply_to(message, "/kick - кикнуть пользователя\n/mute - замутить пользователя на определенное время\n/unmute - размутить пользователя\n")
 
 #команда kick(опционально какой-либо другой, по задумке меняется в зависимости от желания пользователя)
 @bot.message_handler(commands=['kick'])
