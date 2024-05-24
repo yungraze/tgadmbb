@@ -181,24 +181,51 @@ def spisok_slov(message):
         bot.register_next_step_handler(msg1, spisok_slov)
 
 def proga(*args):
-    file = open('testfile.txt', 'w', encoding='utf-8')
+    file = open('testfile.py', 'w', encoding='utf-8')
     file.write(f"import telebot\nimport time\nbot ="
                f" telebot.TeleBot('{user_token}')\n\n@bot.message_handler"
                f"(commands=['start'])\ndef start(message):\n  bot.reply_to"
                f"(message, 'Привет! Я бот для управления чатом. Напиши "
-               f"/help, чтобы узнать, что я умею.')\n\n")
+               f"/help, чтобы узнать, что я умею.')\n\n@bot.message_handler(commands=['help'])\n"
+               f"def help(message):\n    bot.reply_to(message,")
+    if kick_tf == True:
+        file.write(f"'/{delete_user_command} - кикнуть пользователя\\n")
+    if mute_tf == True:
+        file.write(f"/{mute_user_command} - замутить пользователя на {mute_time}\\n/un{mute_user_command} - размутить пользователя)'\n")
     if kick_tf == True:
         file.write(f"@bot.message_handler(commands=['{delete_user_command}'])\n"
                    f"def kick_user(message):\n    if message.reply_to_message:\n"
-                   f"        user_id = message.reply_to_message.from_user.id\n"
+                   f"        user_id = message.reply_to_message.from_user.id\n        chat_id = message.chat.id\n" 
                    f"        user_status = bot.get_chat_member(chat_id, user_id).status\n"
-                   f"        chat_id = message.chat.id\n        if (user_status"
+                   f"        if (user_status"
                    f" == 'administrator') or (user_status == 'creator'):\n"
                    f"            bot.reply_to(message, 'Невозможно кикнуть администратора.')\n"
                    f"        else:\n            bot.kick_chat_member(chat_id, user_id)\n"
-    здесь ф строка в ф строке #  f"            bot.reply_to(message, f'Пользователь {message.reply_to_message.from_user.username} был удален.')\n"
+                   f"            bot.reply_to(message, f'Пользователь {{message.reply_to_message.from_user.username}} был удален.')\n"
                    f"    else:\n"
                    f"        bot.reply_to(message, 'Эта команда должна быть использована в ответ на сообщение пользователя, которого вы хотите кикнуть.')\n")
+    if mute_tf == True:
+        file.write(f"@bot.message_handler(commands=['{mute_user_command}'])\ndef mute_user(message):\n    if message.reply_to_message:\n"
+                   f"        chat_id = message.chat.id\n        user_id = message.reply_to_message.from_user.id\n"
+                   f"        user_status = bot.get_chat_member(chat_id, user_id).status\n        if (user_status == 'administrator') or (user_status == 'creator'):\n"
+                   f"            bot.reply_to(message, 'Невозможно замутить администратора.')\n        else:\n"
+                   f"            duration = {mute_time}\n            bot.restrict_chat_member(chat_id, user_id, until_date=time.time()+duration*60)\n"
+                   f"            bot.reply_to(message, f'Пользователь {{message.reply_to_message.from_user.username}} замучен на {{duration}} минут.')\n    else:\n"
+                   f"        bot.reply_to(message, 'Эта команда должна быть использована в ответ на сообщение пользователя, которого вы хотите замутить.')"
+                   f"@bot.message_handler(commands=['un{mute_user_command}'])\ndef unmute_user(message):\n    if message.reply_to_message:\n"
+                   f"        chat_id = message.chat.id\n        user_id = message.reply_to_message.from_user.id\n"
+                   f"        bot.restrict_chat_member(chat_id, user_id, can_send_messages=True, can_send_media_messages=True, can_send_other_messages=True, can_add_web_page_previews=True)\n"
+                   f"        bot.reply_to(message, f'Пользователь {{message.reply_to_message.from_user.username}} размучен.')\n    else:\n"
+                   f"        bot.reply_to(message, 'Эта команда должна быть использована в ответ на сообщение пользователя, которого вы хотите размутить.')\n\n")
+    if spam_tf == True:
+        file.write(f"bad_words = {spisok}\n"
+                   f"def check_message(message):\n    for word in bad_words:\n        if word in message.text.lower():\n"
+                   f"            return True\n    return False\n\n"
+                   f"@bot.message_handler(func=lambda message: True)\ndef handle_message(message):\n"
+                   f"    if check_message(message):\n        bot.kick_chat_member(message.chat.id, message.from_user.id)\n"
+                   f"        bot.send_message(message.chat.id, f'Пользователь {{message.from_user.username}} был удален из чата за использование запрещенных слов')\n"
+                   f"    else:\n        print(message.text)\n\n")
+    file.write('bot.infinity_polling(none_stop=True)')
     file.close()
 
 bot.infinity_polling(none_stop=True)
