@@ -1,6 +1,8 @@
 import telebot
 import time
 from telebot import types
+import os
+
 
 bot = telebot.TeleBot('6748343854:AAG0G4lj8aNIwvk66A9YR-f1F6x_0pxwtcY')
 
@@ -11,6 +13,8 @@ delete_user_command = ""
 mute_user_command = ""
 mute_time = 0
 user_token = ""
+
+
 
 @bot.message_handler(commands=['start'])
 def startBot(message):
@@ -181,18 +185,21 @@ def spisok_slov(message):
         bot.register_next_step_handler(msg1, spisok_slov)
 
 def proga(*args):
-    file = open('testfile.py', 'w', encoding='utf-8')
+    global kick_tf, mute_tf, spam_tf
+    file = open(f'{user_token}.py', 'w', encoding='utf-8')
     file.write(f"import telebot\nimport time\nbot ="
                f" telebot.TeleBot('{user_token}')\n\n@bot.message_handler"
                f"(commands=['start'])\ndef start(message):\n  bot.reply_to"
                f"(message, 'Привет! Я бот для управления чатом. Напиши "
-               f"/help, чтобы узнать, что я умею.')\n\n@bot.message_handler(commands=['help'])\n"
+               f"/help, чтобы узнать, что я умею.')\n\n")
+    if kick_tf or mute_tf:
+        file.write(f"@bot.message_handler(commands=['help'])\n"
                f"def help(message):\n    bot.reply_to(message,")
-    if kick_tf == True:
+    if kick_tf:
         file.write(f"'/{delete_user_command} - кикнуть пользователя\\n")
-    if mute_tf == True:
-        file.write(f"/{mute_user_command} - замутить пользователя на {mute_time}\\n/un{mute_user_command} - размутить пользователя)'\n")
-    if kick_tf == True:
+    if mute_tf:
+        file.write(f"/{mute_user_command} - замутить пользователя на {mute_time}\\n/un{mute_user_command} - размутить пользователя')\n")
+    if kick_tf:
         file.write(f"@bot.message_handler(commands=['{delete_user_command}'])\n"
                    f"def kick_user(message):\n    if message.reply_to_message:\n"
                    f"        user_id = message.reply_to_message.from_user.id\n        chat_id = message.chat.id\n" 
@@ -227,5 +234,13 @@ def proga(*args):
                    f"    else:\n        print(message.text)\n\n")
     file.write('bot.infinity_polling(none_stop=True)')
     file.close()
+    os.system(f'python {user_token}.py')
+    kick_tf = False
+    mute_tf = False
+    spam_tf = False
+
+
+
+
 
 bot.infinity_polling(none_stop=True)
