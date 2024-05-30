@@ -111,7 +111,7 @@ def process_delete_user_step(message):
     if (message.text == "Да"):
         kick_tf = True
         msg = bot.send_message(message.chat.id,
-                               "Какой командой будет проводиться удаление пользователя? (по умолчанию 'kick')")
+                               "Какой командой будет проводиться удаление пользователя(на английском языке)? (по умолчанию 'kick')")
         bot.register_next_step_handler(msg, save_delete_user_command)
     else:
         kick_tf = False
@@ -132,7 +132,7 @@ def process_mute_user_step(message):
     if (message.text == "Да"):
         mute_tf = True
         msg = bot.send_message(message.chat.id,
-                               "Какой командой будет проводиться заглушение пользователя? Учтите, что отмена заглушения будет проводится командой с добавлением un (по умолчанию 'mute' и 'unmute')")
+                               "Какой командой будет проводиться заглушение пользователя(на английском языке)? Учтите, что отмена заглушения будет проводится командой с добавлением un (по умолчанию 'mute' и 'unmute')")
         bot.register_next_step_handler(msg, save_mute_user_command)
     else:
         mute_tf = False
@@ -143,7 +143,7 @@ def process_mute_user_step(message):
 def process2_time(message):
     global mute_time
     mute_time = int(message.text)
-    bot.send_message(message.chat.id, f'Время: {mute_time}')
+    bot.send_message(message.chat.id, f'Время: {mute_time} минут')
     vibor(message)
 
 
@@ -203,7 +203,7 @@ def proga(*args):
                 file.write(f"/{delete_user_command} - кикнуть пользователя\\n")
             if mute_tf:
                 file.write(
-                    f"/{mute_user_command} - замутить пользователя на {mute_time}\\n/un{mute_user_command} - размутить пользователя")
+                    f"/{mute_user_command} - замутить пользователя на {mute_time} минут\\n/un{mute_user_command} - размутить пользователя")
             file.write("')\n")
         if kick_tf:
             file.write(f"@bot.message_handler(commands=['{delete_user_command}'])\n"
